@@ -1,0 +1,388 @@
+% Helper functions %
+delete_char(Atom,Input,Result) :-
+	atom_concat(A,B,Atom),
+	atom_concat(Input,C,B),
+	atom_concat(A,C,Result).
+
+suffix([Atom|_],Input,[Result]) :-
+	atom_concat(Atom,Input,Result).
+
+extract_last(A,B,C) :-
+	last(A,B),
+	delete_last(A,C).
+	
+delete_last([_],[]).
+delete_last([H|T],[H|Extract]) :-
+	delete_last(T,Extract).
+	
+conjugate(RootA,ResultA,RootB,ResultB,[u,formal]) :-
+	(
+		extract_last(RootA,Last,X), % get last syllable
+		delete_char(Last,u,R),
+		suffix([R],i,Y),
+		append(Y,[ma,su],Z),
+		append(X,Z,ResultA),
+		suffix(RootB,s,ResultB)
+	) ;
+	(
+		extract_last(RootA,Last,X), % get last syllable
+		delete_char(Last,u,R),
+		suffix([R],i,Y),
+		append(Y,[ma,shi,ta],Z),
+		append(X,Z,ResultA),
+		suffix(RootB,ed,ResultB)
+	) ;
+	(
+		extract_last(RootA,Last,X), % get last syllable
+		delete_char(Last,u,R),
+		suffix([R],i,Y),
+		append(Y,[ma,se,n],Z),
+		append(X,Z,ResultA),
+		append([wont],RootB,ResultB)
+	) ;
+	(
+		extract_last(RootA,Last,X), % get last syllable
+		delete_char(Last,u,R),
+		suffix([R],i,Y),
+		append(Y,[ma,se,n,de,shi,ta],Z),
+		append(X,Z,ResultA),
+		append([did,not],RootB,ResultB)
+	) ;
+	(
+		extract_last(RootA,_,X), % get last syllable
+		append(X,[tte,i,ma,su],ResultA),
+		suffix(RootB,ing,B),
+		append([is],B,ResultB)
+	).
+
+conjugate(RootA,ResultA,RootB,ResultB,[u,informal]) :-
+	(
+		ResultA = RootA,
+		suffix(RootB,s,ResultB)
+	) ;
+	(
+		extract_last(RootA,_,X), % get last syllable
+		append(X,[tta],ResultA),
+		suffix(RootB,ed,ResultB)
+	) ;
+	(
+		(
+			extract_last(RootA,Last,X), % get last syllable
+			member(Last,[u]),
+			append(X,[wa,na,i],ResultA),
+			append([wont],RootB,ResultB)
+		) ;
+		(
+			extract_last(RootA,Last,X), % get last syllable
+			not(member(Last,[u])),
+			delete_char(Last,u,R),
+			suffix([R],a,Y),
+			append(Y,[na,i],Z),
+			append(X,Z,ResultA),
+			append([wont],RootB,ResultB)
+		)
+	) ;
+	(
+		(
+			extract_last(RootA,Last,X), % get last syllable
+			member(Last,[u]),
+			append(X,[wa,na,ka,tta],ResultA),
+			append([did,not],RootB,ResultB)
+		) ;
+		(
+			extract_last(RootA,Last,X), % get last syllable
+			not(member(Last,[u])),
+			delete_char(Last,u,R),
+			suffix([R],a,Y),
+			append(Y,[na,ka,tta],Z),
+			append(X,Z,ResultA),
+			append([did,not],RootB,ResultB)
+		)
+	) ;
+	(
+		extract_last(RootA,_,X), % get last syllable
+		append(X,[tte,i,ru],ResultA),
+		suffix(RootB,ing,Y),
+		append([is],Y,ResultB)
+	).
+
+conjugate(RootA,ResultA,RootB,ResultB,[ru,formal]) :-
+	(
+		extract_last(RootA,_,X), % get last syllable
+		append(X,[ma,su],ResultA),
+		suffix(RootB,s,ResultB)
+	) ;
+	(
+		extract_last(RootA,_,X), % get last syllable
+		append(X,[ma,shi,ta],ResultA),
+		(
+			(	% English has some weird verbs, too %
+				member(sleep,RootB),
+				ResultB = [slept]
+			) ;
+			(
+				not(member(sleep,RootB)),
+				suffix(RootB,ed,ResultB)
+			)
+		)
+	) ;
+	(
+		extract_last(RootA,_,X), % get last syllable
+		append(X,[ma,se,n],ResultA),
+		append([wont],RootB,ResultB)
+	) ;
+	(
+		extract_last(RootA,_,X), % get last syllable
+		append(X,[ma,se,n,de,shi,ta],ResultA),
+		append([did,not],RootB,ResultB)
+	) ;
+	(
+		extract_last(RootA,_,X), % get last syllable
+		append(X,[te,i,ma,su],ResultA),
+		suffix(RootB,ing,Y),
+		append([is],Y,ResultB)
+	).
+
+conjugate(RootA,ResultA,RootB,ResultB,[ru,informal]) :-
+	(
+		ResultA = RootA,
+		suffix(RootB,s,ResultB)
+	) ;
+	(
+		extract_last(RootA,_,X), % get last syllable
+		append(X,[ta],ResultA),
+		(
+			(	% English has some weird verbs, too %
+				member(sleep,RootB),
+				ResultB = [slept]
+			) ;
+			(
+				not(member(sleep,RootB)),
+				suffix(RootB,ed,ResultB)
+			)
+		)
+	) ;
+	(
+		extract_last(RootA,_,X), % get last syllable
+		append(X,[na,i],ResultA),
+		append([wont],RootB,ResultB)
+	) ;
+	(
+		extract_last(RootA,_,X), % get last syllable
+		append(X,[na,ka,tta],ResultA),
+		append([did,not],RootB,ResultB)
+	) ;
+	(
+		extract_last(RootA,_,X), % get last syllable
+		append(X,[te,i,ru],ResultA),
+		suffix(RootB,ing,Y),
+		append([is],Y,ResultB)
+	).
+
+conjugate(RootA,ResultA,RootB,ResultB,[irregular,formal]) :-
+	(
+		(
+			extract_last(RootA,_,A),
+			extract_last(A,Last,T),
+			member(Last,[su]),
+			append(T,[shi,ma,su],ResultA),
+			suffix(RootB,s,ResultB)
+		) ;
+		(
+			extract_last(RootA,_,A),
+			extract_last(A,Last,T),
+			member(Last,[su]),
+			append(T,[shi,ma,shi,ta],ResultA),
+			suffix(RootB,d,ResultB)
+		) ;
+		(
+			extract_last(RootA,_,A),
+			extract_last(A,Last,T),
+			member(Last,[su]),
+			append(T,[shi,ma,se,n],ResultA),
+			append([does,not],RootB,ResultB)
+		) ;
+		(
+			extract_last(RootA,_,A),
+			extract_last(A,Last,T),
+			member(Last,[su]),
+			append(T,[shi,ma,se,n,de,shi,ta],ResultA),
+			append([did,not],RootB,ResultB)
+		) ;
+		(
+			extract_last(RootA,_,A),
+			extract_last(A,Last,T),
+			member(Last,[su]),
+			append(T,[shi,te,i,ma,su],ResultA),
+			suffix(RootB,s,ResultB)
+		) ;
+		(
+			extract_last(RootA,_,A),
+			extract_last(A,Last,T),
+			member(Last,[ku]),
+			append(T,[ki,ma,su],ResultA),
+			ResultB = [come]
+		) ;
+		(
+			extract_last(RootA,_,A),
+			extract_last(A,Last,T),
+			member(Last,[ku]),
+			append(T,[ki,ma,shi,ta],ResultA),
+			ResultB = [came]
+		) ;
+		(
+			extract_last(RootA,_,A),
+			extract_last(A,Last,T),
+			member(Last,[ku]),
+			append(T,[ki,ma,se,n],ResultA),
+			ResultB = [wont,come]
+		) ;
+		(
+			extract_last(RootA,_,A),
+			extract_last(A,Last,T),
+			member(Last,[ku]),
+			append(T,[ki,ma,se,n,de,shi,ta],ResultA),
+			ResultB = [did,not,come]
+		) ;
+		(
+			extract_last(RootA,_,A),
+			extract_last(A,Last,T),
+			member(Last,[ku]),
+			append(T,[ki,te,i,ma,su],ResultA),
+			ResultB = [is,coming]
+		)
+	).
+
+conjugate(RootA,ResultA,RootB,ResultB,[irregular,informal]) :-
+	(
+		(
+			extract_last(RootA,_,A),
+			extract_last(A,Last,_),
+			member(Last,[su]),
+			ResultA = RootA,
+			suffix(RootB,s,ResultB)
+		) ;
+		(
+			extract_last(RootA,_,A),
+			extract_last(A,Last,T),
+			member(Last,[su]),
+			append(T,[shi,ta],ResultA),
+			suffix(RootB,d,ResultB)
+		) ;
+		(
+			extract_last(RootA,_,A),
+			extract_last(A,Last,T),
+			member(Last,[su]),
+			append(T,[shi,na,i],ResultA),
+			append([does,not],RootB,ResultB)
+		) ;
+		(
+			extract_last(RootA,_,A),
+			extract_last(A,Last,T),
+			member(Last,[su]),
+			append(T,[shi,na,ka,tta],ResultA),
+			append([did,not],RootB,ResultB)
+		) ;
+		(
+			extract_last(RootA,_,A),
+			extract_last(A,Last,T),
+			member(Last,[su]),
+			append(T,[shi,te,i,ru],ResultA),
+			suffix(RootB,s,ResultB)
+		) ;
+		(
+			extract_last(RootA,_,A),
+			extract_last(A,Last,_),
+			member(Last,[ku]),
+			ResultA = RootA,
+			ResultB = [come]
+		) ;
+		(
+			extract_last(RootA,_,A),
+			extract_last(A,Last,T),
+			member(Last,[ku]),
+			append(T,[ki,ta],ResultA),
+			ResultB = [came]
+		) ;
+		(
+			extract_last(RootA,_,A),
+			extract_last(A,Last,T),
+			member(Last,[ku]),
+			append(T,[ko,na,i],ResultA),
+			ResultB = [wont,come]
+		) ;
+		(
+			extract_last(RootA,_,A),
+			extract_last(A,Last,T),
+			member(Last,[ku]),
+			append(T,[ko,na,ka,tta],ResultA),
+			ResultB = [did,not,come]
+		) ;
+		(
+			extract_last(RootA,_,A),
+			extract_last(A,Last,T),
+			member(Last,[ku]),
+			append(T,[ki,te,i,ru],ResultA),
+			ResultB = [is,coming]
+		)
+	).
+
+% NOUNS %
+japanese([adamu],[noun],[adam],[entity]).
+japanese([iivu],[noun],[eve],[entity]).
+japanese([uchi],[noun],[the,house],[place]).
+
+% U VERBS %
+japanese([wa,ra,u],[verb,root,u,intransitive],[laugh],[property]).
+japanese([te,tsu,da,u],[verb,root,u,transitive],[help],[relation]).
+japanese([sha,be,ru],[verb,root,u,intransitive],[talk],[property]).
+japanese([ka,e,ru],[verb,root,u,transitive],[return],[direction]).
+
+% RU VERBS %
+japanese([ne,ru],[verb,root,ru,intransitive],[sleep],[property]).
+japanese([o,shi,e,ru],[verb,root,ru,transitive],[instruct],[relation]).
+
+% IRREGULAR VERBS (suru/kuru)%
+japanese([ku,ru],[verb,root,irregular,intransitive],[come],[property]).
+japanese([ai,su,ru],[verb,root,irregular,transitive],[love],[relation]).
+
+japanese(A,[verb,conjugated,Formality,Transitivity],B,Type):-
+	japanese(C,[verb,root,VerbType,Transitivity],D,Type),
+	conjugate(C,A,D,B,[VerbType,Formality]).
+
+japanese([A],[verbphrase,Formality],B,[property]) :-
+	japanese(C,[verb,conjugated,Formality,intransitive],B,[property]),
+	atomic_list_concat(C,'',A).
+	
+japanese(A,[nounphrase,nominative],B,[entity]):-
+	japanese(C,[noun],B,[entity]),
+	append(C,[wa],A).
+
+japanese(A,[nounphrase,accusative],B,[entity]):-
+	japanese(C,[noun],B,[entity]),
+	append(C,[wo],A).
+
+japanese(A,[nounphrase,accusative],B,[place]):-
+	japanese(C,[noun],B,[place]),
+	append(C,[ni],A).
+
+japanese(A,[verbphrase,Formality],B,[property]):-
+	japanese(C,[verb,conjugated,Formality,transitive],D,[relation]),
+	atomic_list_concat(C,'',E),
+	japanese(F,[nounphrase,accusative],G,[entity]),
+	append(F,[E],A),
+	append(D,G,B).
+
+japanese(A,[verbphrase,Formality],B,[property]):-
+	japanese(C,[verb,conjugated,Formality,transitive],D,[direction]),
+	atomic_list_concat(C,'',E),
+	japanese(F,[nounphrase,accusative],G,[place]),
+	append(F,[E],A),
+	append([to],G,H),
+	append(D,H,B).
+
+japanese(A,[sentence,Formality],B,[proposition]):-
+	japanese(C,[nounphrase,nominative],D,[entity]),
+	japanese(E,[verbphrase,Formality],F,[property]),
+	append(C,E,A),
+	append(D,F,B).
