@@ -5,7 +5,7 @@ Section A03
 ## Introduction
 For the final project, I am expanding on the `japanese.swipl` program from Homework 1. Here, I am exploring some (but not all) verb conjugations. The main form I am looking at is the indicative form, with a little bit of the progressive form as extra.
 
-In the original `japanese.swipl`, we had:
+In the original `japanese.swipl`, we had:\
 > _Adamu ga waraimasu._\
 > Adam laughs.
 
@@ -13,7 +13,7 @@ For this assignment, we just declared _waraimasu_ as the verb, but it stems from
 Much like in English, we can say "Adam laughs" to show present tense, and "Adam laughed" in past tense.
 Japanese also does this by modifying the root word and doing a suffixation.
 In the case of _warau_, _u_ is dropped and _imasu_ is added to the end.
-Here is another set of examples:
+Here is another set of examples:\
 > _Adamu wa waraimasu._ Adam laughs.\
 > _Adamu wa waraimashita._ Adam laughed.\
 > _Adamu wa waraimasen._ Adam won't laugh.\
@@ -28,7 +28,7 @@ A word like _ne-ru_ (to sleep) ends in _ru_ so it is a _RU_-verb.
 There are also words that look like _RU_-verbs, such as _sha-be-ru_ (to speak), but it's actually an _U_-verb.
 It doesn't help that words like _ne-ru_ have multiple meanings (can also mean "to knead") and can be both an _U_-verb and a _RU_-verb.
 
-Here is a set of examples featuring a _RU_-verb.
+Here is a set of examples featuring a _RU_-verb:\
 > _Iivu wa nemasu._ Eve sleeps.\
 > _Iivu wa nemashita._ Eve slept.\
 > _Iivu wa nemasen._ Eve won't sleep.\
@@ -60,7 +60,7 @@ The majority of the code is in the actual conjugation. To aid in the conjugation
 
 `conjugate` conjugates the verbs. There are six functors, each dealing with the different verb types. I took advantage of a branching technique, surrounding snippets of code in parentheses and using `;`, which signifies "OR". This is useful for dealing with the different verb forms. Each branch takes care of manipulating the last syllable of the verb and appending the correct Japanese verb ending and its English definition. I made some workarounds for the English definitions, which will be discussed in the issues section below. For the irregular verbs, I felt it was appropriate to just hardcode the conjugations of how unique they are. Of course, this will also take into account verbs that use _suru_ and _kuru_ as part of the word like _benkyousuru_ and _aisuru_, which use the _suru_ conjugations. This is done by examining the last two syllables and see if they match `[su,ru]` and `[ku,ru]`.
 
-I also expanded a little more to include one more sentence type. I wanted to see how I could model a directional verb like returning home. Therefore, I added `[uchi]` and let it mean "the house" and declared it `[place]`. This noun would be used with _kaeru_ meaning to return somewhere. I added an additional noun phrase with regard to place. In Japanese, the _ni_ particle is similar to saying "to" in English. Thus, I modeled something like:
+I also expanded a little more to include one more sentence type. I wanted to see how I could model a directional verb like returning home. Therefore, I added `[uchi]` and let it mean "the house" and declared it `[place]`. This noun would be used with _kaeru_ meaning to return somewhere. I added an additional noun phrase with regard to place. In Japanese, the _ni_ particle is similar to saying "to" in English. Thus, I modeled something like:\
 > _Adamu wa uchi ni kaerimasu._ Adam returns to the house.
 
 ## Issues
